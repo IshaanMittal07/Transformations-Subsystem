@@ -34,3 +34,7 @@ class Molecule:
             names=["Atom", "X", "Y", "Z"],
             engine="python",
         )
+        
+    def getContent(self) -> str:
+        return self.positions.to_string(header=False, index=False)
+        
