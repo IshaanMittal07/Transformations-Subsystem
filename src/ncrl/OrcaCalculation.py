@@ -1,5 +1,6 @@
 from .ICalculation import ICalculation
 from .InputFile import InputFile
+from .DockerEngine import DockerEngine
 import os
 import subprocess
 
@@ -14,38 +15,9 @@ class OrcaCalculation(ICalculation):
         
         print("Running Calculation")
         
-        command = f'docker run --name qchemorca -v "{self.cachePath}":/home/orca mrdnalex/orca sh -c "cd /home/orca && /Orca/orca {self.getInputFileName()} > {self.getOutputFileName()}"'
-
-        # Kill and Remove qchemorca container if it's leftover
-        subprocess.run(
-            f"docker kill qchemorca",
-            shell=True,
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-        )
-        subprocess.run(
-            f"docker rm qchemorca",
-            shell=True,
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-        )
-
-        # Run the Calculation in a Container and wait
-        result = subprocess.run(command, shell=True, text=True, capture_output=True)
-
-        # Kill and Remove the Container
-        subprocess.run(
-            f"docker kill qchemorca",
-            shell=True,
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-        )
-        subprocess.run(
-            f"docker rm qchemorca",
-            shell=True,
-            stderr=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-        )
+        dockerEngine = DockerEngine("orca", "mrdnalex/orca", self.cachePath)
+        
+        dockerEngine.run(f'sh -c "cd /home/orca && /Orca/orca {self.getInputFileName()} > {self.getOutputFileName()}"')
         
         print("Calculation Finished!")
         
