@@ -1,8 +1,7 @@
 from .ICalculation import ICalculation
 from .InputFile import InputFile
-from .DockerEngine import DockerEngine
+from .OrcaDockerEngine import OrcaDockerEngine
 import os
-import subprocess
 
 class OrcaCalculation(ICalculation):
     
@@ -13,11 +12,10 @@ class OrcaCalculation(ICalculation):
     def calculate(self):
         self.setup()
         
-        print("Running Calculation")
+        print(f"Running Calculation using the following Input File : \n {self.inputFile.build()}")
         
-        dockerEngine = DockerEngine("orca", "mrdnalex/orca", self.cachePath)
-        
-        dockerEngine.run(f'sh -c "cd /home/orca && /Orca/orca {self.getInputFileName()} > {self.getOutputFileName()}"')
+        dockerEngine = OrcaDockerEngine(self.inputFile.name, self.cachePath)
+        dockerEngine.run()
         
         print("Calculation Finished!")
         
@@ -30,6 +28,4 @@ class OrcaCalculation(ICalculation):
             os.makedirs(self.cachePath)
         
         self.inputFile.save(self.cachePath)    
-        
-    
-    
+       
