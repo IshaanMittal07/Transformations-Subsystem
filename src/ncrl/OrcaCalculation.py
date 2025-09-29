@@ -1,6 +1,6 @@
 from .ICalculation import ICalculation
 from .InputFile import InputFile
-from .OrcaDockerEngine import OrcaDockerEngine
+#from .OrcaDockerCalculation import OrcaDockerCalculation
 import os
 
 class OrcaCalculation(ICalculation):
@@ -14,8 +14,8 @@ class OrcaCalculation(ICalculation):
         
         print(f"Running Calculation using the following Input File : \n {self.inputFile.build()}")
         
-        dockerEngine = OrcaDockerEngine(self.inputFile.name, self.cachePath)
-        dockerEngine.run()
+        # Create a On Location Calculation follow the local function in QChem
+        
         
         print("Calculation Finished!")
         

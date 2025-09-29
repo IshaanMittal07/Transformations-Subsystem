@@ -1,52 +1,64 @@
+from .OrcaCalculation import OrcaCalculation
+from .InputFile import InputFile
 import subprocess
 
-class OrcaDockerEngine:
-    
-    def __init__(self, calcFileName : str, cachePath : str, ):
+# Replace the subprocesses with an Actual Docker Object for more in depth and complex stuff
+class OrcaDockerCalculation(OrcaCalculation):
+
+    def __init__(self, inputFile: InputFile):
         """Constructor for OrcaDockerEngine
-        
+
         Initializes a new Instance of the Engine. Used to run a Orca Calculation inside a Docker Container
-        
+
         Parameters:
             calcFileName (str) - The name of the Calculation, used to name the Input file and Output file
             cachePath (str) - The path to the Cache Folder where the Input, Output and other Calculation files are outputted
         """
-        self.name = "ncrlorca"
+        super().__init__(inputFile)
+
+        self.containerName = "ncrlorca"
         self.imageName = "mrdnalex/orca"
-        self.cachePath = cachePath
-        self.calcFileName = calcFileName
-    
-    def run(self):
-        """run(self, command : str)
-        
+
+    def calculate(self):
+        """calculate(self)
+
         Runs the Orca Calculation through a Docker Container and cleans itself up
         """
-        fullCommand = f'docker run --name {self.name} -v "{self.cachePath}":/home/orca {self.imageName} sh -c "cd /home/orca && /Orca/orca {self.calcFileName}.inp > {self.calcFileName}.out"'
-        
+        super().setup()
+
+        print(f"Running Calculation using the following Input File : \n {self.inputFile.build()}")
+
+        fullCommand = f'docker run --name {self.containerName} -v "{self.cachePath}":/home/orca {self.imageName} sh -c "cd /home/orca && /Orca/orca {self.getInputFileName()} > {self.getOutputFileName()}"'
+
         self._remove()
-        
+
         subprocess.run(
-            fullCommand, 
+            fullCommand,
             shell=True,
             stderr=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
         )
-        
+
         self._remove()
         
+        print("Calculation Finished!")
+
+    def run(self):
+        """run(self, command : str)"""
+
     def _remove(self):
         """_remove(self)
-        
+
         Stops and Removes the Docker Container if it's running
         """
         subprocess.run(
-            f"docker kill {self.name}",
+            f"docker kill {self.containerName}",
             shell=True,
             stderr=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
         )
         subprocess.run(
-            f"docker rm {self.name}",
+            f"docker rm {self.containerName}",
             shell=True,
             stderr=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,

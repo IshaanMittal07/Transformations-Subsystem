@@ -4,4 +4,4 @@ from .XYZFile import XYZFile
 from .InputFile import InputFile
 from .OrcaInputFile import OrcaInputFile
 from .OrcaCalculation import OrcaCalculation
-from .OrcaDockerEngine import OrcaDockerEngine
+from .OrcaDockerCalculation import OrcaDockerCalculation
