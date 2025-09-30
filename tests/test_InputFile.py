@@ -11,6 +11,7 @@ class InputFileTest(unittest.TestCase):
         self.extension2 = ".lmp"
 
         self.template = "!&{calculation} &{basis} &{functional}"
+        self.args = {"calculation": "HF", "basis": "DEF2-SVP", "functional": "B3LYP"}
 
         self.inputFile = InputFile(self.name, self.extension1)
 
@@ -64,54 +65,56 @@ class InputFileTest(unittest.TestCase):
             InputFile(self.name, "inp")
 
     def test_compile(self):
-
+        expectedOutput = "!HF DEF2-SVP B3LYP"
         inputFile = self.inputFile
         template = self.template
 
-        expectedOutput = "!HF DEF2-SVP B3LYP"
+        output = inputFile.compile(template, calculation="HF", basis="DEF2-SVP", functional="B3LYP")
 
-        output = inputFile.compile(
-            template, calculation="HF", basis="DEF2-SVP", functional="B3LYP"
-        )
-
+        self.assertIsNotNone(output)
         self.assertEqual(expectedOutput, output)
 
         output = inputFile.compile(expectedOutput)
 
+        self.assertIsNotNone(output)
         self.assertEqual(expectedOutput, output)
 
     def test_compile_error(self):
         """Tests the compile functions Error throwing
-        
+
         Ensures the proper Errors are thrown when Improper Values are provided to the compile function
-        
+
         Input :
             template : 1
-        Output : 
+        Output :
             TypeError
-            
+
         Input :
             args : ""
-        Output : 
+        Output :
             TypeError
-            
+
         Input :
             template : ""
-        Output : 
+        Output :
             ValueError
-            
+
         Input :
             template : " "
-        Output : 
+        Output :
             ValueError
 
+        Input :
+            template : "!&{calculation} &{basis} &{functional}"
+            args : None
+        Output :
+            ValueError
         """
-
         inputFile = self.inputFile
 
         with self.assertRaises(TypeError):
             inputFile.compile(1)
-            
+
         with self.assertRaises(TypeError):
             inputFile.compile(self.template, "")
 
@@ -120,7 +123,106 @@ class InputFileTest(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             inputFile.compile(" ")
-        
-        # Test that error is raised if not enough Args Provided
+
         with self.assertRaises(ValueError):
             inputFile.compile(self.template)
+
+    def test_setHeader(self):
+
+        expectedOutput = "!HF DEF2-SVP B3LYP"
+        inputFile = self.inputFile
+        template = self.template
+
+        inputFile.setHeader(template, calculation="HF", basis="DEF2-SVP", functional="B3LYP")
+
+        self.assertEqual(expectedOutput, inputFile._header)
+
+        inputFile.setHeader(expectedOutput)
+
+        self.assertEqual(expectedOutput, inputFile._header)
+
+    def test_setHeader_error(self):
+        inputFile = self.inputFile
+
+        with self.assertRaises(TypeError):
+            inputFile.setHeader(1)
+
+        with self.assertRaises(TypeError):
+            inputFile.setHeader(self.template, "")
+
+        with self.assertRaises(ValueError):
+            inputFile.setHeader("")
+
+        with self.assertRaises(ValueError):
+            inputFile.setHeader(" ")
+
+        with self.assertRaises(ValueError):
+            inputFile.setHeader(self.template)
+
+    def test_setFooter(self):
+
+        expectedOutput = "!HF DEF2-SVP B3LYP"
+        inputFile = self.inputFile
+        template = self.template
+
+        inputFile.setFooter(
+            template, calculation="HF", basis="DEF2-SVP", functional="B3LYP"
+        )
+
+        self.assertNotEqual("", inputFile._footer)
+        self.assertEqual(expectedOutput, inputFile._footer)
+
+        inputFile.setFooter(expectedOutput)
+
+        self.assertNotEqual("", inputFile._footer)
+        self.assertEqual(expectedOutput, inputFile._footer)
+
+    def test_setFooter_error(self):
+        inputFile = self.inputFile
+
+        with self.assertRaises(TypeError):
+            inputFile.setFooter(1)
+
+        with self.assertRaises(TypeError):
+            inputFile.setFooter(self.template, "")
+
+        with self.assertRaises(ValueError):
+            inputFile.setFooter("")
+
+        with self.assertRaises(ValueError):
+            inputFile.setFooter(" ")
+
+        with self.assertRaises(ValueError):
+            inputFile.setFooter(self.template)
+
+    def test_build(self):
+
+        expectedOutput = "!HF DEF2-SVP B3LYP"
+        inputFile = self.inputFile
+
+        self.assertIsNotNone(inputFile.build())
+        self.assertEqual("", inputFile.build())
+
+        inputFile.setHeader(expectedOutput)
+        
+        self.assertIsNotNone(inputFile.build())
+        self.assertEqual(expectedOutput, inputFile.build().replace("\n", ""))
+        
+        inputFile.setFooter(expectedOutput)
+        
+        self.assertIsNotNone(inputFile.build())
+        self.assertEqual(expectedOutput*2, inputFile.build().replace("\n", ""))
+        
+        inputFile.addStructure(expectedOutput)
+        
+        self.assertIsNotNone(inputFile.build())
+        self.assertEqual(expectedOutput*3, inputFile.build().replace("\n", ""))
+        
+        inputFile.addStructure(expectedOutput)
+        
+        self.assertIsNotNone(inputFile.build())
+        self.assertEqual(expectedOutput*4, inputFile.build().replace("\n", ""))
+        
+        
+        
+        
