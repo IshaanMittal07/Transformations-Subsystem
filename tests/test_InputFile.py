@@ -223,6 +223,3 @@ class InputFileTest(unittest.TestCase):
         self.assertIsNotNone(inputFile.build())
         self.assertEqual(expectedOutput*4, inputFile.build().replace("\n", ""))
         
-        
-        
-        
