@@ -7,7 +7,7 @@ class OrcaInputFile(InputFile):
     BASIC = "!&{calculation} &{basis} &{functional}"
 
     def __init__(self, name : str,  molecule: Molecule):
-        super().__init__(name)
+        super().__init__(name, ".inp")
 
         if not isinstance(molecule, Molecule):
             raise TypeError("The Molecule passed in is not of Type Molecule!")
