@@ -1,7 +1,7 @@
 import unittest
 from ncrl import InputFile
 
-
+# Implement DocStrings tomorrow
 class InputFileTest(unittest.TestCase):
 
     def setUp(self):
@@ -11,6 +11,7 @@ class InputFileTest(unittest.TestCase):
         self.extension2 = ".lmp"
 
         self.template = "!&{calculation} &{basis} &{functional}"
+        self.expectedOutput = "!HF DEF2-SVP B3LYP"
         self.args = {"calculation": "HF", "basis": "DEF2-SVP", "functional": "B3LYP"}
 
         self.inputFile = InputFile(self.name, self.extension1)
@@ -65,7 +66,7 @@ class InputFileTest(unittest.TestCase):
             InputFile(self.name, "inp")
 
     def test_compile(self):
-        expectedOutput = "!HF DEF2-SVP B3LYP"
+        expectedOutput = self.expectedOutput
         inputFile = self.inputFile
         template = self.template
 
@@ -129,7 +130,7 @@ class InputFileTest(unittest.TestCase):
 
     def test_setHeader(self):
 
-        expectedOutput = "!HF DEF2-SVP B3LYP"
+        expectedOutput = self.expectedOutput
         inputFile = self.inputFile
         template = self.template
 
@@ -161,7 +162,7 @@ class InputFileTest(unittest.TestCase):
 
     def test_setFooter(self):
 
-        expectedOutput = "!HF DEF2-SVP B3LYP"
+        expectedOutput = self.expectedOutput
         inputFile = self.inputFile
         template = self.template
 
@@ -197,7 +198,7 @@ class InputFileTest(unittest.TestCase):
 
     def test_build(self):
 
-        expectedOutput = "!HF DEF2-SVP B3LYP"
+        expectedOutput = self.expectedOutput
         inputFile = self.inputFile
 
         self.assertIsNotNone(inputFile.build())
