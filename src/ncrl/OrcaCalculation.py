@@ -1,7 +1,6 @@
+import os
 from .ICalculation import ICalculation
 from .InputFile import InputFile
-#from .OrcaDockerCalculation import OrcaDockerCalculation
-import os
 
 class OrcaCalculation(ICalculation):
     

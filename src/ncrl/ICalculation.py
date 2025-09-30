@@ -18,7 +18,7 @@ class ICalculation(ABC):
             os.mkdir(self.baseCachePath)
             
     def getInputFileName(self):
-        return self.inputFile.name + ".inp"
+        return self.inputFile.name + self.inputFile.extension
     
     def getOutputFileName(self):
         return self.inputFile.name + ".out"

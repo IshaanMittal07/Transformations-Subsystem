@@ -1,6 +1,6 @@
+import subprocess
 from .OrcaCalculation import OrcaCalculation
 from .InputFile import InputFile
-import subprocess
 
 # Replace the subprocesses with an Actual Docker Object for more in depth and complex stuff
 class OrcaDockerCalculation(OrcaCalculation):
