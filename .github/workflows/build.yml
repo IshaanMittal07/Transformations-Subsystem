@@ -29,12 +29,6 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Check Directory
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents:"
-          ls -la
-
       - name: Build with setup.py using version
         run: |
           hatch build
