@@ -43,9 +43,6 @@ class OrcaDockerCalculation(OrcaCalculation):
         
         print("Calculation Finished!")
 
-    def run(self):
-        """run(self, command : str)"""
-
     def _remove(self):
         """_remove(self)
 

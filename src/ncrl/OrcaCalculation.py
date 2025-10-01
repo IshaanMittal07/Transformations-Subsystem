@@ -1,11 +1,12 @@
 import os
-from .ICalculation import ICalculation
+from .Calculation import Calculation
 from .InputFile import InputFile
 
-class OrcaCalculation(ICalculation):
+class OrcaCalculation(Calculation):
     
     def __init__(self, inputFile : InputFile):
         super().__init__(inputFile)
+        
         self.cachePath = os.path.join(self.baseCachePath, "Orca", inputFile.name)
         
     def calculate(self):
