@@ -76,7 +76,7 @@ class InputFile(ABC):
 
         return fileContent
 
-    def save(self, filePath):
-
+    def save(self, filePath : str):
+    
         with open(os.path.join(filePath, self.name + self.extension), "w") as f:
             f.write(self.build())

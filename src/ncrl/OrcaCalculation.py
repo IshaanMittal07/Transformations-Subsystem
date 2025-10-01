@@ -13,12 +13,7 @@ class OrcaCalculation(ICalculation):
         
         print(f"Running Calculation using the following Input File : \n {self.inputFile.build()}")
         
-        # Create a On Location Calculation follow the local function in QChem
-        
-        
-        print("Calculation Finished!")
-        
-        return super().calculate()
+        raise NotImplemented("Running Orca Calculations Locally has not been implemented yet!")
     
     def setup(self):
         super().setup()

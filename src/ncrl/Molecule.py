@@ -3,9 +3,23 @@ import pandas as pd
 
 class Molecule:
 
-    atoms: list[str]
-
     def __init__(self, name: str, filePath: str):
+        
+        if (not isinstance(name, str)):
+            raise TypeError("The name of the Molecule must be a string")
+        
+        if (not isinstance(filePath, str)):
+            raise TypeError("The filePath of the Molecule must be a string")
+        
+        if len(name.strip()) == 0:
+            raise ValueError("The name cannot be empty")
+        
+        if len(filePath.strip()) == 0:
+            raise ValueError("The filePath cannot be empty")
+        
+        if (not os.path.exists(filePath)):
+            raise FileNotFoundError(f"The file located at {filePath} does not exist")
+        
         self.name: str = name
         self.filePath: str = filePath
         self.positions: pd.DataFrame = self._readXYZ(filePath)
@@ -23,7 +37,7 @@ class Molecule:
         """
 
         if not os.path.exists(filePath):
-            raise FileNotFoundError(f"The file located at {filePath} does not exist")
+            raise FileNotFoundError(f"The file located at {filePath} does not exist ({os.getcwd()})")
 
         return pd.read_csv(
             filePath,
