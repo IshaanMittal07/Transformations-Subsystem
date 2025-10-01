@@ -28,13 +28,8 @@ class OrcaDockerCalculationTest(unittest.TestCase):
         
         self.assertEqual(self.containerName, calculation.containerName)
         self.assertEqual(self.imageName, calculation.imageName)
-    
-        
+     
     def test_constructor_error(self):
         
         with self.assertRaises(TypeError):
             OrcaDockerCalculation("")
-        
-        
-
-
