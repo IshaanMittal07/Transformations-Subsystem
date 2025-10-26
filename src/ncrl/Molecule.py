@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+import numpy as np #added for the rotation function
+from typing import Optional
 
 class Molecule:
 
@@ -49,4 +51,83 @@ class Molecule:
         
     def getContent(self) -> str:
         return self.positions.to_string(header=False, index=False)
+#ADDED--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    def translate(self, X:float, Y:float, Z:float) -> None: 
+
+        """ 
+        Translates the given molecule X, Y, and Z units 
+
+        Parameters: 
+            X(float): X units to translate 
+            Y(float): Y units to translate  
+            Z(float): Z units to translate  
+
+        """
+
+        if not isinstance((X), (float)):
+            raise TypeError(f"{X} must be a float")
+        
+        if not isinstance((Y), (float)):
+            raise TypeError(f"{Y} must be a float")
+
+        if not isinstance((Z), (float)):
+            raise TypeError(f"{Z} must be a float")
+
+        self.positions["X"] += X
+        self.positions["Y"] += Y
+        self.positions["Z"] += Z
+
+        print(self.name + "has been translated and now has positions (X: " + str(self.positions["X"]) + ", Y: " + str(self.positions["Y"]) + ", Z: " + str(self.positions["Z"]) + ")")
+        
+    def rotate(self, rotation_matrix:np.ndarray) -> None:
+
+        """ 
+        Rotates the given molecule X, Y, and Z units 
+
+        Parameters: 
+            rotation_matrix(np.ndarray): 3x3 rotation matrix
+
+        """
+
+        if rotation_matrix.shape != (3,3):
+            raise ValueError("The rotation matrix must be a 3x3 matrix")
+
+        vector = np.array([self.positions["X"], self.positions["Y"], self.positions["Z"]])
+        vector = vector @ rotation_matrix
+
+        self.positions["X"] = vector[0]
+        self.positions["Y"] = vector[1]
+        self.positions["Z"] = vector[2]
+
+        print(self.name + "has been rotated and now has positions (X: " + str(self.positions["X"]) + ", Y: " + str(self.positions["Y"]) + ", Z: " + str(self.positions["Z"]) + ")")
+
+    def scale(self, X:float, Y:float, Z:float) -> None: 
+
+        """ 
+        Scales the X, Y, Z coordintes of the given molecule
+
+        Parameters: 
+            X(float): X scale factor
+            Y(float): Y scale factor
+            Z(float): Z scale factor
+
+        """
+
+        if not isinstance((X), (float)):
+            raise TypeError(f"{X} must be a float")
+        
+        if not isinstance((Y), (float)):
+            raise TypeError(f"{Y} must be a float")
+
+        if not isinstance((Z), (float)):
+            raise TypeError(f"{Z} must be a float")
+                
+        self.positions["X"] *= X
+        self.positions["Y"] *= Y
+        self.positions["Z"] *= Z
+
+        print(self.name + "has been scaled and now has positions (X: " + str(self.positions["X"]) + ", Y: " + str(self.positions["Y"]) + ", Z: " + str(self.positions["Z"]) + ")")
+#ADDED--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
         
