@@ -1,7 +1,6 @@
 import unittest
 import re
 from ncrl import Molecule
-import pytest
 import numpy as np
 
 class MolecueTest(unittest.TestCase):
@@ -10,6 +9,7 @@ class MolecueTest(unittest.TestCase):
 
         self.name = "Propane"
         self.filePath = "tests/Resources/Propane.xyz"
+        self.molecule = Molecule(self.name, self.filePath)
 
         self.columns = ["Atom", "X", "Y", "Z"]
         self.atomNum = 11
@@ -68,50 +68,62 @@ class MolecueTest(unittest.TestCase):
         for line in lines:
             self.assertRegex(line.strip(), pattern)
     
-    @pytest.fixture #Creates molecule object before each test
-    def molecule(self):
-        return Molecule(self.name, self.filePath)
+    def test_translate(self):
+        """ 
+        Asserts if the method returns the intended output based on the test values
+        """
+        self.molecule.translate(1.0, -1.0, 2.0) 
+        self.assertEqual(self.molecule.positions["X"] == 2.0)
+        self.assertEqual(self.molecule.positions["Y"] == 1.0)
+        self.assertEqual(self.molecule.positions["Z"] == 5.0)
 
-    def test_translate(molecule):
-        molecule.translate(1.0, -1.0, 2.0) 
-        assert molecule.positions["X"] == 2.0
-        assert molecule.positions["Y"] == 1.0
-        assert molecule.positions["Z"] == 5.0
+    def test_translate_invalid(self):
+        """ 
+        Checks if the invalid inputs are properly being catched with the TypeError
+        """
+        with self.assertRaises(TypeError):
+            self.molecule.translate("", 2.0, 3.0)
+        with self.assertRaises(TypeError):
+            self.molecule.translate(1.0, "a", 3.0)
+        with self.assertRaises(TypeError):
+            self.molecule.translate(1.0, 2.0, " ")
 
-    @pytest.mark.parametrize("x,y,z", [ #To check if method can catch invalid type (these are the x,y,z of the next method)
-        ("1", 2.0, 3.0),
-        (1.0, "2", 3.0),
-        (1.0, 2.0, "3")
-    ])
-
-    def test_translate_invalid(molecule, x, y, z):
-        with pytest.raises(TypeError):
-            molecule.translate(x, y, z)
-
-    def test_rotate(molecule): 
+    def test_rotate(self): 
+        """ 
+        Asserts if the method returns the intended output based on the test values
+        Note: In this an indentity matrix is used because it is easiest to test, as it should not change the output
+        """
         rotation_matrix = np.eye(3) #Identity matrix 
-        molecule.rotate(rotation_matrix)
-        assert molecule.positions["X"] == 1.0
-        assert molecule.positions["Y"] == 2.0
-        assert molecule.positions["Z"] == 3.0
+        self.molecule.rotate(rotation_matrix)
+        self.assertEqual(self.molecule.positions["X"] == 1.0)
+        self.assertEqual(self.molecule.positions["Y"] == 2.0)
+        self.assertEqual(self.molecule.positions["Z"] == 3.0)
 
-    def test_rotate_invalid(molecule):
-        with pytest.raises(ValueError):
-            molecule.rotate(np.ones((2, 2))) #tests for invalid shape
+    def test_rotate_invalid(self):
+        """ 
+        Checks if the invalid inputs are properly being catched with the ValueError
+        Note: In this case, an illogical shape is entered (you cannot do matrix vector product between a 2x2 matrix and 3D vector)
+        """
+        with self.assertRaises(ValueError):
+            self.molecule.rotate(np.ones((2, 2))) #tests for invalid shape
 
-    def test_scale(molecule):
-        molecule.scale(2.0, 3.0, 4.0) 
-        assert molecule.positions["X"] == 2.0
-        assert molecule.positions["Y"] == 6.0
-        assert molecule.positions["Z"] == 12.0
+    def test_scale(self):
+        """ 
+        Asserts if the method returns the intended output based on the test values
+        """
+        self.molecule.scale(2.0, 3.0, 4.0) 
+        self.assertEqual(self.molecule.positions["X"] == 2.0)
+        self.assertEqual(self.molecule.positions["Y"] == 6.0)
+        self.assertEqual(self.molecule.positions["Z"] == 12.0)
 
-    @pytest.mark.parametrize("x,y,z", [ #To check if method can catch invalid type (these are the x,y,z of the next method)
-        ("1", 2.0, 3.0),
-        (1.0, "2", 3.0),
-        (1.0, 2.0, "3")
-    ])
-
-    def test_scale_invalid(molecule, x, y, z):
-        with pytest.raises(TypeError):
-            molecule.scale(x, y, z)
+    def test_scale_invalid(self):
+        """ 
+        Checks if the invalid inputs are properly being catched with the TypeError
+        """
+        with self.assertRaises(TypeError):
+            self.molecule.scale("", 2.0, 3.0)
+        with self.assertRaises(TypeError):
+            self.molecule.scale(1.0, "a", 3.0)
+        with self.assertRaises(TypeError):
+            self.molecule.scale(1.0, 2.0, " ")
 
