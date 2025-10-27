@@ -83,13 +83,11 @@ class Molecule:
         """
         if rotation_matrix.shape != (3,3):
             raise ValueError("The rotation matrix must be a 3x3 matrix")
+        
+        coords = self.positions[["X", "Y", "Z"]].values 
+        rotated = coords @ rotation_matrix.T  #Transpose the matrix to ensure correct shape
 
-        vector = np.array([self.positions["X"], self.positions["Y"], self.positions["Z"]])
-        vector = vector @ rotation_matrix
-
-        self.positions["X"] = vector[0]
-        self.positions["Y"] = vector[1]
-        self.positions["Z"] = vector[2]
+        self.positions[["X", "Y", "Z"]] = rotated
 
     def scale(self, X:float, Y:float, Z:float) -> None: 
         """ 
