@@ -71,11 +71,13 @@ class MolecueTest(unittest.TestCase):
     def test_translate(self):
         """ 
         Asserts if the method returns the intended output based on the test values
+        Note: np.allclose is used due to the inpredictability of float rounding
         """
+        inital_positions = self.molecule.positions.copy()
         self.molecule.translate(1.0, -1.0, 2.0) 
-        self.assertEqual(self.molecule.positions["X"] == 2.0)
-        self.assertEqual(self.molecule.positions["Y"] == 1.0)
-        self.assertEqual(self.molecule.positions["Z"] == 5.0)
+        self.assertEqual(np.allclose(self.molecule.positions["X"].values, inital_positions["X"].values + 1.0))
+        self.assertEqual(np.allclose(self.molecule.positions["Y"].values, inital_positions["Y"].values - 1.0))
+        self.assertEqual(np.allclose(self.molecule.positions["Z"].values, inital_positions["Z"].values + 2.0))
 
     def test_translate_invalid(self):
         """ 
@@ -91,13 +93,13 @@ class MolecueTest(unittest.TestCase):
     def test_rotate(self): 
         """ 
         Asserts if the method returns the intended output based on the test values
-        Note: In this an indentity matrix is used because it is easiest to test, as it should not change the output
+        Note: In this an identity matrix is used because it is easiest to test, as it should not change the output
+        Note: np.allclose is used due to the inpredictability of float rounding
         """
+        inital_positions = self.molecule.positions.copy()
         rotation_matrix = np.eye(3) #Identity matrix 
         self.molecule.rotate(rotation_matrix)
-        self.assertEqual(self.molecule.positions["X"] == 1.0)
-        self.assertEqual(self.molecule.positions["Y"] == 2.0)
-        self.assertEqual(self.molecule.positions["Z"] == 3.0)
+        self.assertEqual(np.allclose(self.molecule.positions[["X", "Y", "Z"]], inital_positions[["X", "Y", "Z"]]))
 
     def test_rotate_invalid(self):
         """ 
@@ -110,11 +112,13 @@ class MolecueTest(unittest.TestCase):
     def test_scale(self):
         """ 
         Asserts if the method returns the intended output based on the test values
+        Note: np.allclose is used due to the inpredictability of float rounding
         """
+        inital_positions = self.molecule.positions.copy()
         self.molecule.scale(2.0, 3.0, 4.0) 
-        self.assertEqual(self.molecule.positions["X"] == 2.0)
-        self.assertEqual(self.molecule.positions["Y"] == 6.0)
-        self.assertEqual(self.molecule.positions["Z"] == 12.0)
+        self.assertEqual(np.allclose(self.molecule.positions["X"].values, inital_positions["X"].values * 2.0))
+        self.assertEqual(np.allclose(self.molecule.positions["Y"].values, inital_positions["Y"].values * 3.0))
+        self.assertEqual(np.allclose(self.molecule.positions["Z"].values, inital_positions["Z"].values * 4.0))
 
     def test_scale_invalid(self):
         """ 
