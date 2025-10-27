@@ -1,6 +1,8 @@
 import unittest
 import re
 from ncrl import Molecule
+import pytest
+import numpy as np
 
 class MolecueTest(unittest.TestCase):
 
@@ -65,3 +67,51 @@ class MolecueTest(unittest.TestCase):
 
         for line in lines:
             self.assertRegex(line.strip(), pattern)
+    
+    @pytest.fixture #Creates molecule object before each test
+    def molecule(self):
+        return Molecule(self.name, self.filePath)
+
+    def test_translate(molecule):
+        molecule.translate(1.0, -1.0, 2.0) 
+        assert molecule.positions["X"] == 2.0
+        assert molecule.positions["Y"] == 1.0
+        assert molecule.positions["Z"] == 5.0
+
+    @pytest.mark.parametrize("x,y,z", [ #To check if method can catch invalid type (these are the x,y,z of the next method)
+        ("1", 2.0, 3.0),
+        (1.0, "2", 3.0),
+        (1.0, 2.0, "3")
+    ])
+
+    def test_translate_invalid(molecule, x, y, z):
+        with pytest.raises(TypeError):
+            molecule.translate(x, y, z)
+
+    def test_rotate(molecule): 
+        rotation_matrix = np.eye(3) #Identity matrix 
+        molecule.rotate(rotation_matrix)
+        assert molecule.positions["X"] == 1.0
+        assert molecule.positions["Y"] == 2.0
+        assert molecule.positions["Z"] == 3.0
+
+    def test_rotate_invalid(molecule):
+        with pytest.raises(ValueError):
+            molecule.rotate(np.ones((2, 2))) #tests for invalid shape
+
+    def test_scale(molecule):
+        molecule.scale(2.0, 3.0, 4.0) 
+        assert molecule.positions["X"] == 2.0
+        assert molecule.positions["Y"] == 6.0
+        assert molecule.positions["Z"] == 12.0
+
+    @pytest.mark.parametrize("x,y,z", [ #To check if method can catch invalid type (these are the x,y,z of the next method)
+        ("1", 2.0, 3.0),
+        (1.0, "2", 3.0),
+        (1.0, 2.0, "3")
+    ])
+
+    def test_scale_invalid(molecule, x, y, z):
+        with pytest.raises(TypeError):
+            molecule.scale(x, y, z)
+
