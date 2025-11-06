@@ -1,7 +1,7 @@
 import unittest
 import re
-from ncrl import Molecule
 import numpy as np
+from ncrl import Molecule
 
 class MolecueTest(unittest.TestCase):
 

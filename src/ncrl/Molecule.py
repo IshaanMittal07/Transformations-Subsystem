@@ -111,13 +111,4 @@ class Molecule:
         self.positions["X"] *= X
         self.positions["Y"] *= Y
         self.positions["Z"] *= Z
-
-if __name__ == "__main__":
-    mol = Molecule("Test", "ncrl\\data\\benzene.xyz")
-    print(mol.getContent())
-    mol.translate(1, 1, 1)
-    print(mol.getContent())
-    mol.scale(2, 2, 2)
-    print(mol.getContent())
-    mol.rotate(np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]]))
-    print(mol.getContent())
+    
