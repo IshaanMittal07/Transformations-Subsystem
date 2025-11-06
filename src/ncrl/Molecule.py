@@ -61,6 +61,15 @@ class Molecule:
 
         if not isinstance(vector, np.ndarray):
             raise TypeError("Input must be a NumPy array.")
+        
+        if not isinstance((vector[0]), (int, float)):
+            raise TypeError(f"{vector[0]} must be an int or float")
+        
+        if not isinstance((vector[1]), (int, float)):
+            raise TypeError(f"{vector[1]} must be an int or float")
+
+        if not isinstance((vector[2]), (int, float)):
+            raise TypeError(f"{vector[2]} must be an int or float")
 
         self.positions["X"] += vector[0] 
         self.positions["Y"] += vector[1]

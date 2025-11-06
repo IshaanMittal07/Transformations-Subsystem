@@ -74,7 +74,7 @@ class MolecueTest(unittest.TestCase):
         Note: np.allclose is used due to the inpredictability of float rounding
         """
         inital_positions = self.molecule.positions.copy()
-        self.molecule.translate(1.0, -1.0, 2.0) 
+        self.molecule.translate(np.array([1.0, -1.0, 2.0])) 
         self.assertTrue(np.allclose(self.molecule.positions["X"].values, inital_positions["X"].values + 1.0))
         self.assertTrue(np.allclose(self.molecule.positions["Y"].values, inital_positions["Y"].values - 1.0))
         self.assertTrue(np.allclose(self.molecule.positions["Z"].values, inital_positions["Z"].values + 2.0))
@@ -84,11 +84,11 @@ class MolecueTest(unittest.TestCase):
         Checks if the invalid inputs are properly being catched with the TypeError
         """
         with self.assertRaises(TypeError):
-            self.molecule.translate("", 2.0, 3.0)
+            self.molecule.translate(np.array(["", -1.0, 2.0]))
         with self.assertRaises(TypeError):
-            self.molecule.translate(1.0, "a", 3.0)
+            self.molecule.translate(np.array([1.0, "a", 2.0]))
         with self.assertRaises(TypeError):
-            self.molecule.translate(1.0, 2.0, " ")
+            self.molecule.translate(np.array([1.0, -1.0, " "]))
 
     def test_rotate(self): 
         """ 
