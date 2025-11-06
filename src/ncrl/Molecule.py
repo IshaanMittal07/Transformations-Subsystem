@@ -51,27 +51,20 @@ class Molecule:
     def getContent(self) -> str:
         return self.positions.to_string(header=False, index=False)
 
-    def translate(self, X:float, Y:float, Z:float) -> None: 
+    def translate(self, vector:np.ndarray) -> None: 
         """ 
         Translates the given molecule X, Y, and Z units 
 
         Parameters: 
-            X(float): X units to translate 
-            Y(float): Y units to translate  
-            Z(float): Z units to translate  
+            vector(np.ndarray): Vector that stores molecule's X, Y, and Z coordinates 
         """
-        if not isinstance((X), (float)):
-            raise TypeError(f"{X} must be a float")
-        
-        if not isinstance((Y), (float)):
-            raise TypeError(f"{Y} must be a float")
 
-        if not isinstance((Z), (float)):
-            raise TypeError(f"{Z} must be a float")
+        if not isinstance(vector, np.ndarray):
+            raise TypeError("Input must be a NumPy array.")
 
-        self.positions["X"] += X
-        self.positions["Y"] += Y
-        self.positions["Z"] += Z
+        self.positions["X"] += vector[0] 
+        self.positions["Y"] += vector[1]
+        self.positions["Z"] += vector[2] 
         
     def rotate(self, rotation_matrix:np.ndarray) -> None:
         """ 
@@ -97,15 +90,25 @@ class Molecule:
             Y(float): Y scale factor
             Z(float): Z scale factor
         """
-        if not isinstance((X), (float)):
-            raise TypeError(f"{X} must be a float")
+        if not isinstance((X), (int, float)):
+            raise TypeError(f"{X} must be an int or float")
         
-        if not isinstance((Y), (float)):
-            raise TypeError(f"{Y} must be a float")
+        if not isinstance((Y), (int, float)):
+            raise TypeError(f"{Y} must be an int or float")
 
-        if not isinstance((Z), (float)):
-            raise TypeError(f"{Z} must be a float")
+        if not isinstance((Z), (int, float)):
+            raise TypeError(f"{Z} must be an int or float")
                 
         self.positions["X"] *= X
         self.positions["Y"] *= Y
         self.positions["Z"] *= Z
+
+if __name__ == "__main__":
+    mol = Molecule("Test", "ncrl\\data\\benzene.xyz")
+    print(mol.getContent())
+    mol.translate(1, 1, 1)
+    print(mol.getContent())
+    mol.scale(2, 2, 2)
+    print(mol.getContent())
+    mol.rotate(np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]]))
+    print(mol.getContent())
